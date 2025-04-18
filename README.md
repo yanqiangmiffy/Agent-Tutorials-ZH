@@ -5,3 +5,4 @@
 - [02-AI代理是大模型实现可扩展智能自动化的关键](https://mp.weixin.qq.com/s/m1NWQmXEURA-Lv_r8ELlzA)
 - [03-体验智能体构建过程：从零开始构建Agent](https://mp.weixin.qq.com/s/OgrBGKE2VA6iBj5Du1odEA)
 - [04-谷歌的A2A到底是什么东西？](https://mp.weixin.qq.com/s/NiVNxn91sGh3qx14d9W_Bw)
+- [05-一文详解模型上下文协议MCP](https://mp.weixin.qq.com/s/gVLOdlOhfd0w5yFIhbawdQ)
