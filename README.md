@@ -6,3 +6,4 @@
 - [03-体验智能体构建过程：从零开始构建Agent](https://mp.weixin.qq.com/s/OgrBGKE2VA6iBj5Du1odEA)
 - [04-谷歌的A2A到底是什么东西？](https://mp.weixin.qq.com/s/NiVNxn91sGh3qx14d9W_Bw)
 - [05-一文详解模型上下文协议MCP](https://mp.weixin.qq.com/s/gVLOdlOhfd0w5yFIhbawdQ)
+- [06-实战教程来了！从零开始打造MCP+Ollama集成](https://mp.weixin.qq.com/s/RcHaYR-C84TA_b3Wx56asA)
