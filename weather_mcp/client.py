@@ -7,13 +7,14 @@ from typing import Any, Optional, Union
 from pydantic import BaseModel, Field, create_model
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
-from ollama import chat,Client
-
+from ollama import chat, Client
 
 client = Client(
-  host='http://192.168.1.5:11434',
-  headers={'x-some-header': 'some-value'}
+    host='http://192.168.1.5:11434',
+    # host='http://localhost:11434',
+    headers={'x-some-header': 'some-value'}
 )
+
 
 class OllamaMCP:
 
@@ -76,7 +77,6 @@ class OllamaMCP:
         self.thread.join()
         print("持久MCP会话已关闭。")
 
-
     @staticmethod
     def convert_json_type_to_python_type(json_type: str):
         """简单地将JSON类型映射到Python（Pydantic）类型。"""
@@ -96,7 +96,7 @@ class OllamaMCP:
         """
         dynamic_classes = {}
         for tool in self.tools:
-            print("tool",tool)
+            # print("tool", tool)
             class_name = tool.name.capitalize()
             properties: dict[str, Any] = {}
             for prop_name, prop_info in tool.inputSchema.get("properties", {}).items():
@@ -117,10 +117,10 @@ class OllamaMCP:
                 "Response",
                 __base__=BaseModel,
                 __doc__="LLm响应类",
-                response=(str, Field(..., description= "向用户确认函数将被调用。")),
+                response=(str, Field(..., description="向用户确认函数将被调用。")),
                 tool=(all_tools_type, Field(
                     ...,
-                    description="用于运行和获取魔法输出的工具"
+                    description="用于运行和获取结果的工具"
                 )),
             )
         else:
@@ -138,39 +138,82 @@ class OllamaMCP:
         使用动态响应模型向Ollama发送消息。
         如果在响应中检测到工具，则使用持久会话调用它。
         """
-        conversation = [{"role":"assistant", "content": f"你必须使用工具。你可以使用以下函数：{[ tool.name for tool in self.tools]}"}]
-        conversation.extend(messages)
+        # 添加系统消息，告知可用工具
+        tool_names = [tool.name for tool in self.tools]
+        tool_descriptions = [f"{tool.name}: {tool.description}" for tool in self.tools]
+
+        system_message = {
+            "role": "system",
+            "content": f"你可以使用以下工具：{tool_names}。工具详情：{tool_descriptions}"
+        }
+
+        # 确保系统消息在最前面
+        if messages and messages[0].get("role") == "system":
+            # 合并系统消息内容
+            messages[0]["content"] = f"{messages[0]['content']} {system_message['content']}"
+        else:
+            # 在消息列表开头添加系统消息
+            messages.insert(0, system_message)
+
         if self.response_model is None:
             raise ValueError("响应模型尚未创建。请先调用create_response_model()。")
 
         # 获取聊天消息格式的JSON模式
         format_schema = self.response_model.model_json_schema()
-        print(format_schema)
-        # 调用Ollama（假定是同步的）并解析响应
+        # print(format_schema)
+
+        # 调用Ollama并解析响应
         response = client.chat(
-            model="gemma3:latest",
-            messages=conversation,
+            model="gemma3:latest",  # 确保使用适当的模型
+            messages=messages,
             format=format_schema
         )
         print("Ollama响应", response.message.content)
-        response_obj = self.response_model.model_validate_json(response.message.content)
-        maybe_tool = response_obj.tool
 
-        if maybe_tool:
-            function_name = maybe_tool.__class__.__name__.lower()
-            func_args = maybe_tool.model_dump()
-            # 使用asyncio.to_thread在线程中调用同步的call_tool方法
-            output = await asyncio.to_thread(self.call_tool, function_name, func_args)
-            return output
-        else:
-            print("响应中未检测到工具。返回纯文本响应。")
-        return response_obj.response
+        try:
+            response_obj = self.response_model.model_validate_json(response.message.content)
+            maybe_tool = response_obj.tool
+
+            if maybe_tool:
+                function_name = maybe_tool.__class__.__name__.lower()
+                func_args = maybe_tool.model_dump()
+                # 使用asyncio.to_thread在线程中调用同步的call_tool方法
+                output = await asyncio.to_thread(self.call_tool, function_name, func_args)
+                print(output.content[0].text)
+
+                weather_messages = [
+                    {
+                        "role": "system",
+                        "content": (
+                            "你是一个有用的天气助手，更够解释天气。"
+                        )
+                    },
+                    {
+                        "role": "user",
+                        "content":f"下面获取的天气情况{output.content[0].text}\n"
+                                  f"帮我解释下天气,请用中文解释，输出文本"
+
+                    }
+                ]
+                weather_response = client.chat(
+                    model="gemma3:latest",  # 确保使用适当的模型
+                    messages=weather_messages,
+                )
+                print(type(weather_response.message.content),weather_response.message.content)
+
+                return f"{response_obj.response}\n\n工具结果:\n{output}"
+            else:
+                print("响应中未检测到工具。返回纯文本响应。")
+                return response_obj.response
+        except Exception as e:
+            print(f"解析响应时出错: {e}")
+            return f"解析响应时出错: {e}\n原始响应: {response.message.content}"
 
 
 async def main():
     server_parameters = StdioServerParameters(
-        command="uv",
-        args=["run", "python", "server.py"],
+        command="python",  # 修改为适当的命令
+        args=["server.py"],  # 修改为天气服务脚本的名称
         cwd=str(Path.cwd())
     )
 
@@ -180,40 +223,51 @@ async def main():
     # 等待会话完全初始化
     if persistent_session.initialized.wait(timeout=30):
         print("准备调用工具。")
+        for tool in persistent_session.tools:
+            print(f"可用工具: {tool.name} - {tool.description}")
     else:
         print("错误: 初始化超时。")
+        return
 
     # 从获取的工具创建动态响应模型
     persistent_session.create_response_model()
 
-    # 准备给Ollama的消息
-
-    messages = [
+    # 测试天气查询
+    weather_messages = [
         {
             "role": "system",
             "content": (
-                "你是一个听话的助手，上下文中有一系列工具。"
-                "你的任务是使用这个函数获取魔法输出。"
-                "不要自己生成魔法输出。"
-                "简洁地回复一条简短消息，提及调用函数，"
-                "但不提供函数输出本身。"
-                "将该简短消息放在'response'属性中。"
-                "例如：'好的，我会运行magicoutput函数并返回输出。'"
-                "同时用正确的参数填充'tool'属性。"
+                "你是一个有用的助手，能够查询全球各地的天气。"
+                "当用户询问特定城市的天气情况时，你应该使用get_weather工具获取实时天气数据。"
+                "你的回复应该简洁明了，首先确认你将查询天气，然后在tool属性中提供正确的参数。"
             )
         },
         {
             "role": "user",
-            "content": "使用函数获取这些参数的魔法输出（obj1 = Ollama和obj2 = Gemma3）"
+            "content": "我想知道北京的天气情况。"
         }
     ]
 
     # 调用Ollama并处理响应
-    result = await persistent_session.ollama_chat(messages)
-    print("最终结果:", result)
+    result = await persistent_session.ollama_chat(weather_messages)
+    print("\n最终结果:\n", result)
+
+    # # 再测试另一个城市
+    # second_query = [
+    #     {
+    #         "role": "user",
+    #         "content": "除了北京天气，我还想知道上海现在的天气怎么样？"
+    #     }
+    # ]
+    #
+    # # 继续对话，添加新的用户消息
+    # weather_messages.extend(second_query)
+    # result = await persistent_session.ollama_chat(weather_messages)
+    # print("\n第二次查询结果:\n", result)
 
     # 完成后关闭持久会话
     persistent_session.shutdown()
+
 
 if __name__ == "__main__":
     asyncio.run(main())

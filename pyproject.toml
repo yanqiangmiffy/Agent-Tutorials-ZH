@@ -7,4 +7,5 @@ requires-python = ">=3.12"
 dependencies = [
     "fastmcp>=2.2.0",
     "ollama>=0.4.8",
+    "loguru>=0.7.3",
 ]
