@@ -1,3 +1,8 @@
 .idea
 __pycache__/
 */*.env
+paper_reading/downloads
+
+paper_reading/auto_extract_output
+paper_reading/markdown_output
+ppaper_reading/arsed_output
