@@ -6,3 +6,6 @@ paper_reading/downloads
 paper_reading/auto_extract_output
 paper_reading/markdown_output
 ppaper_reading/arsed_output
+deep_research_agent/logs
+deep_research_agent/reports
+deep_research_agent/intermediate_results
