@@ -1,0 +1,36 @@
+{
+  "content": "当然！这里有一首温馨可爱的儿歌，适合小朋友传唱：\n\n---\n\n**《小星星的梦》**  \n✨🌙🎵  \n\n小星星，眨眼睛，  \n躲在云端放光明。  \n月亮船，摇啊摇，  \n载着梦儿轻轻飘。  \n\n萤火虫，提灯笼，  \n照亮花园小草丛。  \n风儿唱，树叶响，  \n伴我进入甜梦乡。  \n\n——  \n希望这首简单又充满画面感的儿歌能让宝贝喜欢！如果需要主题调整（比如动物、季节等），可以告诉我哦 😊",
+  "additional_kwargs": {
+    "refusal": null
+  },
+  "response_metadata": {
+    "token_usage": {
+      "completion_tokens": 120,
+      "prompt_tokens": 12,
+      "total_tokens": 132,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 12
+    },
+    "model_name": "deepseek-chat",
+    "system_fingerprint": "fp_feb633d1f5_prod0820_fp8_kvcache",
+    "id": "866e04cd-5b1c-41cd-a7c6-a4140f4bcd05",
+    "service_tier": null,
+    "finish_reason": "stop",
+    "logprobs": null
+  },
+  "id": "run--d3ffbc2a-d62b-49e5-8daa-981205501093-0",
+  "usage_metadata": {
+    "input_tokens": 12,
+    "output_tokens": 120,
+    "total_tokens": 132,
+    "input_token_details": {
+      "cache_read": 0
+    },
+    "output_token_details": {}
+  }
+}

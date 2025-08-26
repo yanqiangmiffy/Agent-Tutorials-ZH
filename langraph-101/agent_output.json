@@ -1,0 +1,113 @@
+{
+  "messages": [
+    {
+      "type": "human",
+      "content": "请问北京的天气怎么样",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "id": "72b50e8e-e20f-4d2e-8add-4993747de54e"
+    },
+    {
+      "type": "ai",
+      "content": "我来帮您查询北京的天气情况。",
+      "additional_kwargs": {
+        "tool_calls": [
+          {
+            "id": "call_0_4e1e8263-3930-4052-b272-26d618f4301d",
+            "function": {
+              "arguments": "{\"city\": \"\\u5317\\u4eac\"}",
+              "name": "get_weather"
+            },
+            "type": "function",
+            "index": 0
+          }
+        ],
+        "refusal": null
+      },
+      "response_metadata": {
+        "token_usage": {
+          "completion_tokens": 28,
+          "prompt_tokens": 155,
+          "total_tokens": 183,
+          "completion_tokens_details": null,
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cached_tokens": 0
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 155
+        },
+        "model_name": "deepseek-chat",
+        "system_fingerprint": "fp_feb633d1f5_prod0820_fp8_kvcache",
+        "id": "41400771-a017-484c-970c-d697720af00b",
+        "service_tier": null,
+        "finish_reason": "tool_calls",
+        "logprobs": null
+      },
+      "id": "run--09d15b9b-e85f-4ec2-968a-ca1051321606-0",
+      "tool_calls": [
+        {
+          "name": "get_weather",
+          "args": {
+            "city": "北京"
+          },
+          "id": "call_0_4e1e8263-3930-4052-b272-26d618f4301d",
+          "type": "tool_call"
+        }
+      ],
+      "usage_metadata": {
+        "input_tokens": 155,
+        "output_tokens": 28,
+        "total_tokens": 183,
+        "input_token_details": {
+          "cache_read": 0
+        },
+        "output_token_details": {}
+      }
+    },
+    {
+      "type": "tool",
+      "content": "北京的天气是晴朗的!",
+      "name": "get_weather",
+      "id": "f47a51d0-9b26-4eb4-8d3b-f1e4f02520bb",
+      "tool_call_id": "call_0_4e1e8263-3930-4052-b272-26d618f4301d"
+    },
+    {
+      "type": "ai",
+      "content": "根据查询结果，北京目前的天气是晴朗的！天气状况很好，适合外出活动。如果您需要更详细的天气信息（如温度、湿度、风力等），请告诉我，我可以为您提供更全面的天气情况。",
+      "additional_kwargs": {
+        "refusal": null
+      },
+      "response_metadata": {
+        "token_usage": {
+          "completion_tokens": 45,
+          "prompt_tokens": 187,
+          "total_tokens": 232,
+          "completion_tokens_details": null,
+          "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cached_tokens": 128
+          },
+          "prompt_cache_hit_tokens": 128,
+          "prompt_cache_miss_tokens": 59
+        },
+        "model_name": "deepseek-chat",
+        "system_fingerprint": "fp_feb633d1f5_prod0820_fp8_kvcache",
+        "id": "63d43631-9171-4fb0-98c0-6470313d7798",
+        "service_tier": null,
+        "finish_reason": "stop",
+        "logprobs": null
+      },
+      "id": "run--47611254-733a-4d55-b002-96a17b131a02-0",
+      "usage_metadata": {
+        "input_tokens": 187,
+        "output_tokens": 45,
+        "total_tokens": 232,
+        "input_token_details": {
+          "cache_read": 128
+        },
+        "output_token_details": {}
+      }
+    }
+  ]
+}
