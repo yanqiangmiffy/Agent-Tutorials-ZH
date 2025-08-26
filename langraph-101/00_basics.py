@@ -29,4 +29,5 @@ response=agent.invoke(
     {"messages": [{"role": "user", "content": "请问北京的天气怎么样"}]}
 )
 
-print(response)
+print(response.keys())
+print(response["messages"])
