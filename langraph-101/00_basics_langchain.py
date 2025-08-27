@@ -1,6 +1,7 @@
 from langgraph.prebuilt import create_react_agent
 from langchain_deepseek import ChatDeepSeek
 from dotenv import load_dotenv
+from langchain_core.messages import HumanMessage
 
 load_dotenv(verbose=True)
 
@@ -12,7 +13,6 @@ deepseek_chat=ChatDeepSeek(
     max_retries=2,
 )
 
-from langchain_core.messages import HumanMessage
 
 # Create a message
 msg = HumanMessage(content="Hello world", name="Lance")

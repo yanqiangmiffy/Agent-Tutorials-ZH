@@ -124,3 +124,18 @@ print("1. 数据格式统一，便于后续处理")
 print("2. 类型安全，避免数据格式错误")
 print("3. 易于集成到其他系统中")
 print("4. 提供清晰的数据结构定义")
+
+
+# ========with_structured_output=======
+from pydantic import BaseModel, Field
+
+class PersonInfo(BaseModel):
+    name: str = Field(description="人的姓名")
+    age: int = Field(description="年龄")
+    skills: list[str] = Field(description="技能列表")
+
+# 创建结构化输出模型
+structured_llm = model.with_structured_output(PersonInfo)
+
+response = structured_llm.invoke("分析这个人：张三，28岁，会Python和机器学习")
+print(response)
