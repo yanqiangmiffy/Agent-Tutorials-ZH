@@ -23,8 +23,9 @@ from deep_research_from_scratch.prompts_zh import summarize_webpage_prompt
 # ===== 实用工具函数 =====
 
 def get_today_str() -> str:
-    """获取当前日期的人类可读格式。"""
-    return datetime.now().strftime("%a %b %-d, %Y")
+    """获取人类可读格式的当前日期。"""
+    print(datetime,datetime.now().strftime("%a %b %d, %Y"))
+    return datetime.now().strftime("%a %b %d, %Y")
 
 def get_current_dir() -> Path:
     """获取模块的当前目录。
@@ -58,7 +59,7 @@ def _set_env(var: str):
 
 _set_env("DEEPSEEK_API_KEY")
 
-model = ChatDeepSeek(model="deepseek-chat")
+summarization_model = ChatDeepSeek(model="deepseek-chat")
 
 tavily_client = TavilyClient()
 
@@ -104,6 +105,8 @@ def summarize_webpage_content(webpage_content: str) -> str:
     Returns:
         带有关键摘录的格式化摘要
     """
+    # print(webpage_content)
+    # print(get_today_str())
     try:
         # 设置用于摘要的结构化输出模型
         structured_model = summarization_model.with_structured_output(Summary)
@@ -115,7 +118,7 @@ def summarize_webpage_content(webpage_content: str) -> str:
                 date=get_today_str()
             ))
         ])
-
+        print("summarize_webpage_content", summary)
         # 格式化摘要，结构清晰
         formatted_summary = (
             f"<summary>\n{summary.summary}\n</summary>\n\n"
@@ -276,7 +279,7 @@ def format_message_content(message):
                 parts.append(item['text'])
             elif item.get('type') == 'tool_use':
                 parts.append(f"\n🔧 工具调用: {item['name']}")
-                parts.append(f"   参数: {json.dumps(item['input'], indent=2)}")
+                parts.append(f"   参数: {json.dumps(item['input'], indent=2,ensure_ascii=False)}")
                 parts.append(f"   ID: {item.get('id', 'N/A')}")
                 tool_calls_processed = True
     else:
@@ -286,7 +289,7 @@ def format_message_content(message):
     if not tool_calls_processed and hasattr(message, 'tool_calls') and message.tool_calls:
         for tool_call in message.tool_calls:
             parts.append(f"\n🔧 工具调用: {tool_call['name']}")
-            parts.append(f"   参数: {json.dumps(tool_call['args'], indent=2)}")
+            parts.append(f"   参数: {json.dumps(tool_call['args'], indent=2,ensure_ascii=False)}")
             parts.append(f"   ID: {tool_call['id']}")
 
     return "\n".join(parts)
