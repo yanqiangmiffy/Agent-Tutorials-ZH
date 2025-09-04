@@ -132,17 +132,17 @@ with open("scope_research.png", "wb") as f:
 
 checkpointer = InMemorySaver()
 
-# 运行工作流程
-from utils import format_messages
-from langchain_core.messages import HumanMessage
-thread = {"configurable": {"thread_id": "1"}}
-result = scope_research.invoke({"messages": [HumanMessage(content="我想调研北京市最好的咖啡店。")]}, config=thread)
-format_messages(result['messages'])
-
-
-result = scope_research.invoke({"messages": [HumanMessage(content="让我们通过咖啡的质量来评估北京最好的咖啡店，质量的标准有价格、环境、服务、位置，这些信息你来不确定，不用询问我,评估10家就行，其他因素不用考虑了")]}, config=thread)
-format_messages(result['messages'])
-
-from rich.markdown import Markdown
-# print(Markdown(result["research_brief"]))
-print(result["research_brief"])
+# # 运行工作流程
+# from deep_research_from_scratch.utils import format_messages
+# from langchain_core.messages import HumanMessage
+# thread = {"configurable": {"thread_id": "1"}}
+# result = scope_research.invoke({"messages": [HumanMessage(content="我想调研北京市最好的咖啡店。")]}, config=thread)
+# format_messages(result['messages'])
+#
+#
+# result = scope_research.invoke({"messages": [HumanMessage(content="让我们通过咖啡的质量来评估北京最好的咖啡店，质量的标准有价格、环境、服务、位置，这些信息你来不确定，不用询问我,评估10家就行，其他因素不用考虑了")]}, config=thread)
+# format_messages(result['messages'])
+#
+# from rich.markdown import Markdown
+# # print(Markdown(result["research_brief"]))
+# print(result["research_brief"])

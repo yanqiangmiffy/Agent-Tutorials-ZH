@@ -163,28 +163,30 @@ agent_builder.add_edge("compress_research", END)
 
 # 编译智能体
 researcher_agent = agent_builder.compile()
-
-# 示例研究简报
-research_brief = """我需要研究北京最好的10家咖啡店，基于咖啡质量的四个核心标准：价格、环境、服务、位置。具体来说：
-
-1. 价格维度：分析每家咖啡店的咖啡价格区间，包括不同饮品（如美式、拿铁、手冲等）的价格水平，但用户未指定具体的预算约束，因此考虑所有价格范围
-
-2. 环境维度：评估咖啡店的装修风格、座位舒适度、空间布局、噪音水平、整体氛围等环境因素
-
-3. 服务维度：考察员工专业程度、服务态度、出餐速度、个性化服务体验等服务质量指标
-
-4. 位置维度：分析咖啡店的地理位置便利性，包括交通可达性、周边环境、是否靠近商业区或景点等
-
-我需要收集这10家咖啡店的详细信息，包括但不限于：
-- 每家店的具体地址和联系方式
-- 营业时间
-- 价格菜单和饮品选择
-- 环境照片或描述
-- 顾客评价和评分
-- 特色咖啡和服务
-
-优先考虑来自官方咖啡店网站、大众点评、美团等本地生活平台，以及咖啡爱好者社区的真实评价和信息。研究应该基于2025年的最新数据，确保信息的时效性和准确性。"""
-
-result = researcher_agent.invoke({"researcher_messages": [HumanMessage(content=f"{research_brief}.")]})
-print(result)
-format_messages(result['researcher_messages'])
+png_data = researcher_agent.get_graph(xray=True).draw_mermaid_png()
+with open("researcher_agent.png", "wb") as f:
+    f.write(png_data)
+# # 示例研究简报
+# research_brief = """我需要研究北京最好的10家咖啡店，基于咖啡质量的四个核心标准：价格、环境、服务、位置。具体来说：
+#
+# 1. 价格维度：分析每家咖啡店的咖啡价格区间，包括不同饮品（如美式、拿铁、手冲等）的价格水平，但用户未指定具体的预算约束，因此考虑所有价格范围
+#
+# 2. 环境维度：评估咖啡店的装修风格、座位舒适度、空间布局、噪音水平、整体氛围等环境因素
+#
+# 3. 服务维度：考察员工专业程度、服务态度、出餐速度、个性化服务体验等服务质量指标
+#
+# 4. 位置维度：分析咖啡店的地理位置便利性，包括交通可达性、周边环境、是否靠近商业区或景点等
+#
+# 我需要收集这10家咖啡店的详细信息，包括但不限于：
+# - 每家店的具体地址和联系方式
+# - 营业时间
+# - 价格菜单和饮品选择
+# - 环境照片或描述
+# - 顾客评价和评分
+# - 特色咖啡和服务
+#
+# 优先考虑来自官方咖啡店网站、大众点评、美团等本地生活平台，以及咖啡爱好者社区的真实评价和信息。研究应该基于2025年的最新数据，确保信息的时效性和准确性。"""
+#
+# result = researcher_agent.invoke({"researcher_messages": [HumanMessage(content=f"{research_brief}.")]})
+# print(result)
+# format_messages(result['researcher_messages'])
